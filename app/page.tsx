@@ -280,7 +280,7 @@ export default function Page() {
   }
 
   return (
-    <main className="min-h-screen max-w-9xl flex items-center justify-center bg-linear-to-b from-blue-50 via-white to-green-50 px-4 mx-auto sm:px-6 lg:px-8 py-8 ">
+    <main className="min-h-100vh max-w-9xl flex items-center justify-center bg-linear-to-b from-blue-50 via-white to-green-50 px-4 mx-auto sm:px-6 lg:px-8 py-8 ">
       {/* Full-page loader overlay when fetching new selection */}
       {loading && (
         <div role="status" aria-live="polite" className="fixed inset-0 z-50 flex items-center justify-center bg-white/90">
