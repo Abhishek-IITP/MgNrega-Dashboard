@@ -78,8 +78,10 @@ export default function Page() {
 
   async function fetchData(s: string, d: string, fy: string) {
     const cacheKey = `mgnrega:${s}:${d}:${fy}:${limit}:${offset}`
-    
-    // Check localStorage cache first
+    // show loader immediately when a new selection is made
+    setLoading(true)
+
+    // Check localStorage cache first (fast optimistic render)
     try {
       const cached = localStorage.getItem(cacheKey)
       if (cached) {
@@ -94,7 +96,6 @@ export default function Page() {
     } catch {}
 
     try {
-      setLoading(true)
       const res = await fetch(`/api/mgnrega?state=${encodeURIComponent(s)}&district=${encodeURIComponent(d)}&fin_year=${encodeURIComponent(fy)}&limit=${limit}&offset=${offset}`)
       const json = await res.json()
       const source = json.source || 'unknown'
@@ -280,6 +281,37 @@ export default function Page() {
 
   return (
     <main className="min-h-screen max-w-9xl flex items-center justify-center bg-linear-to-b from-blue-50 via-white to-green-50 px-4 mx-auto sm:px-6 lg:px-8 py-8 ">
+      {/* Full-page loader overlay when fetching new selection */}
+      {loading && (
+        <div role="status" aria-live="polite" className="fixed inset-0 z-50 flex items-center justify-center bg-white/90">
+          <div className="text-center text-blue-700 p-6 rounded-lg shadow-lg bg-white/80 max-w-md mx-4">
+            <div className="flex items-center justify-center gap-4">
+              {/* Simple chart/logo SVG */}
+              <svg width="56" height="56" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-blue-700">
+                <rect x="3" y="10" width="3" height="8" rx="0.5" fill="currentColor" opacity="0.9" />
+                <rect x="9" y="6" width="3" height="12" rx="0.5" fill="currentColor" opacity="0.75" />
+                <rect x="15" y="3" width="3" height="15" rx="0.5" fill="currentColor" opacity="0.6" />
+                <circle cx="19" cy="5" r="1" fill="currentColor" />
+              </svg>
+
+              <div className="flex flex-col items-start">
+                <div className="inline-flex items-center gap-3">
+                  <div className="inline-block animate-spin text-3xl">⟳</div>
+                  <h2 className="text-2xl font-bold">Fetching data for</h2>
+                </div>
+                <div className="mt-1 text-lg text-blue-800 font-semibold">{district}, {state}</div>
+                <div className="text-sm text-gray-600">Financial Year {finYear}</div>
+              </div>
+            </div>
+
+            {dataCount?.received ? (
+              <p className="mt-4 text-sm text-gray-700">Showing cached {dataCount.received} records — updating to latest…</p>
+            ) : (
+              <p className="mt-4 text-sm text-gray-700">Fetching latest records from API…</p>
+            )}
+          </div>
+        </div>
+      )}
       {/* Main Container */}
       <div className="w-full mx-auto max-w-7xl px-6">
       {/* Header Section - Government Official Style */}
