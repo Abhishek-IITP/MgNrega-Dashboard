@@ -237,3 +237,8 @@ This is a personal project. For improvements or bug reports, please document the
 **Built with ❤️ using modern web technologies**
 
 Happy analyzing! 📊✨
+
+
+**Live Prreview**
+VIdeo:-
+[https://www.loom.com/share/1d23ca2f20274b8b989ca92954eecd63]
